@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Form(models.Model):
@@ -10,6 +11,8 @@ class Form(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return f"{reverse('render')}?builder={self.slug}"
 
 class Question(models.Model):
     TEXT = 'text'
@@ -55,4 +58,4 @@ class Answer(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.text
+        return self.response.name

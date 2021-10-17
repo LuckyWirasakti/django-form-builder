@@ -35,7 +35,7 @@ class FormAdmin(admin.ModelAdmin):
     )
 
 
-class AnswerInline(admin.TabularInline):
+class AnswerInline(admin.StackedInline):
     model = Answer
     readonly_fields = (
         'question',
