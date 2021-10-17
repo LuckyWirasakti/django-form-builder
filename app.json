@@ -1,19 +1,19 @@
 {
   "name": "django form builder",
   "description": "A simple project to get started with Django Form Builder on Heroku",
-  "repository": "https://github.com/michaelmior/heroku-django-skeleton",
+  "repository": "https://github.com/LuckyWirasakti/django-form-builder",
   "keywords": ["python", "django", "template", "form", "builder"],
   "env": {
     "SECRET_KEY": {
       "generator": "secret"
     },
     "DEBUG": {
-      "value": true
+      "value": 1
+    },
+    "ALLOWED_HOSTS": {
+      "value": "*"
     }
   },
-  "addons": [
-    "newrelic:wayne"
-  ],
   "scripts": {
     "postdeploy": "python manage.py migrate --noinput"
   }
