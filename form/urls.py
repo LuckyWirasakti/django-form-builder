@@ -19,6 +19,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('', lambda x: redirect('/admin')),
-    path('', include('form.builder.urls')),
+    path('form/', include('form.builder.urls')),
     path('admin/', admin.site.urls),
 ]

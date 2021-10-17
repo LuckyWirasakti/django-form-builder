@@ -14,7 +14,7 @@ class BuilderFormMixin:
     def _get_default_fields(self):
         self.builder = get_object_or_404(
             Form,
-            pk=get_current_request().GET.get('builder', None)
+            slug=get_current_request().GET.get('builder', None)
         )
         self.fields['form'].widget = forms.HiddenInput()
         self.fields['form'].initial = self.builder
