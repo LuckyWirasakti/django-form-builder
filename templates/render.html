@@ -1,0 +1,35 @@
+{% load bootstrap4 %}
+
+
+
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    {% bootstrap_css %}
+    <title>Hello, world!</title>
+  </head>
+  <body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-10 text-center">
+                <h1>Hello World</h1>
+            </div>
+            <div class="col-md-10 py-5">
+                {% bootstrap_messages %}
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    {% bootstrap_form form %}
+                    {% buttons %}
+                        <button type="submit" class="btn btn-primary btn-block">Save</button>
+                    {% endbuttons %}
+                </form>
+            </div>
+        </div>
+    </div>
+  </body>
+  {% bootstrap_javascript jquery='full' %}
+</html>
