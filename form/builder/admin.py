@@ -16,7 +16,7 @@ class QuestionInline(admin.TabularInline):
 @admin.register(Form)
 class FormAdmin(admin.ModelAdmin):
     list_per_page = 15
-    list_display_links =(
+    list_display =(
         'id',
         'name',
         'created_at',
@@ -28,12 +28,7 @@ class FormAdmin(admin.ModelAdmin):
     inlines = (
         QuestionInline,
     )
-    list_display = (
-        'id',
-        'name',
-        'created_at',
-        'updated_at'
-    )
+    list_display_links = list_display
     readonly_fields = (
         'created_at',
         'updated_at'
@@ -76,6 +71,7 @@ class ResponseAdmin(admin.ModelAdmin, mixins.ExportCsvMixin):
     list_filter = (
         'form',
     )
+    list_display_links = list_display
     readonly_fields = (
         'form',
         'created_at',

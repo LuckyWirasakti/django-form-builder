@@ -1,5 +1,5 @@
 import csv
-from io import BytesIO
+
 from crum import get_current_request
 from django import forms
 from django.core.files.base import ContentFile
@@ -10,20 +10,17 @@ from django.shortcuts import get_object_or_404
 from form.builder.models import Form, Question
 
 
-class BuilderFormMixin:
+class BuilderFormMixin(forms.ModelForm):
     context_name = 'builder_'
 
-    def _get_default_fields(self):
-        self.builder = get_object_or_404(
+    def _builder_fields(self):
+        form = get_object_or_404(
             Form,
             slug=get_current_request().GET.get('builder', None)
         )
         self.fields['form'].widget = forms.HiddenInput()
-        self.fields['form'].initial = self.builder
-        return self.fields
-
-    def _get_builder_fields(self):
-        builders = Question.objects.filter(form=self.builder)
+        self.fields['form'].initial = form
+        builders = Question.objects.filter(form=form)
         for builder in builders:
             field_name = f'{self.context_name}{builder.text}'
             if builder.choice == Question.TEXT:
@@ -42,19 +39,28 @@ class BuilderFormMixin:
                     label=builder.text,
                     required=True
                 )
-        return self.fields
 
     def _save_related_fields(self, response):
-        for key, val in self.cleaned_data.items():        
+        for key, val in self.cleaned_data.items():
             if key.startswith(self.context_name):
                 if isinstance(val, InMemoryUploadedFile):
-                    default_storage.save(val.name, content=ContentFile(val.read()))
+                    default_storage.save(
+                        val.name, content=ContentFile(val.read()))
                 response.answer_set.create(
                     question=Question.objects.get(text=key.replace(
                         self.context_name, '')
                     ),
                     text=val
                 )
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._builder_fields()
+
+    def save(self, commit=True):
+        self._save_related_fields(
+            super().save(commit)
+        )
 
 
 class ExportCsvMixin:
@@ -63,7 +69,8 @@ class ExportCsvMixin:
         field_names = [field.name for field in meta.fields]
 
         response = HttpResponse(content_type='text/csv')
-        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(meta)
+        response['Content-Disposition'] = 'attachment; filename={}.csv'.format(
+            meta)
 
         writer = csv.writer(response)
         writer.writerow(field_names)
