@@ -1,3 +1,7 @@
+import os
+
+from django.utils.safestring import mark_safe
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -59,3 +63,9 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.response.name
+
+    @property
+    def answer(self):
+        if self.question.choice == Question.ATTACHMENT:
+            return mark_safe('<a href="%s">%s</a>' % (os.path.join(settings.MEDIA_URL, self.text), self.text))
+        return self.text

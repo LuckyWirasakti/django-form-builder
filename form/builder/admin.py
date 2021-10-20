@@ -16,6 +16,12 @@ class QuestionInline(admin.TabularInline):
 @admin.register(Form)
 class FormAdmin(admin.ModelAdmin):
     list_per_page = 15
+    list_display_links =(
+        'id',
+        'name',
+        'created_at',
+        'updated_at'
+    )
     prepopulated_fields = {
         'slug': ('name',)
     }
@@ -25,7 +31,6 @@ class FormAdmin(admin.ModelAdmin):
     list_display = (
         'id',
         'name',
-        'slug',
         'created_at',
         'updated_at'
     )
@@ -39,7 +44,7 @@ class AnswerInline(admin.StackedInline):
     model = Answer
     readonly_fields = (
         'question',
-        'text',
+        'answer',
         'created_at',
         'updated_at'
     )

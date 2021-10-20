@@ -14,6 +14,9 @@ class RenderForm(forms.ModelForm, mixins.BuilderFormMixin):
         super(RenderForm, self).__init__(*args, **kwargs)
         self._get_default_fields()
         self._get_builder_fields()
+    
+    def clean(self):
+        return super().clean()
 
     def save(self, commit=True):
         self._save_related_fields(

@@ -20,7 +20,7 @@
             </div>
             <div class="col-md-10 py-5">
                 {% bootstrap_messages %}
-                <form method="post" class="form">
+                <form method="post" class="form" enctype="multipart/form-data">
                     {% csrf_token %}
                     {% bootstrap_form form %}
                     {% buttons %}

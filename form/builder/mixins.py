@@ -1,10 +1,12 @@
 import csv
-
+from io import BytesIO
 from crum import get_current_request
 from django import forms
+from django.core.files.base import ContentFile
+from django.core.files.storage import default_storage
+from django.core.files.uploadedfile import InMemoryUploadedFile
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
-
 from form.builder.models import Form, Question
 
 
@@ -31,17 +33,22 @@ class BuilderFormMixin:
                 )
             if builder.choice == Question.LONG_TEXT:
                 self.fields[field_name] = forms.CharField(
-                    required=True,
+                    widget=forms.Textarea,
                     label=builder.text,
-                    widget=forms.Textarea
+                    required=True,
                 )
             if builder.choice == Question.ATTACHMENT:
-                self.fields[field_name] = forms.FileField()
+                self.fields[field_name] = forms.FileField(
+                    label=builder.text,
+                    required=True
+                )
         return self.fields
 
     def _save_related_fields(self, response):
-        for key, val in self.cleaned_data.items():
+        for key, val in self.cleaned_data.items():        
             if key.startswith(self.context_name):
+                if isinstance(val, InMemoryUploadedFile):
+                    default_storage.save(val.name, content=ContentFile(val.read()))
                 response.answer_set.create(
                     question=Question.objects.get(text=key.replace(
                         self.context_name, '')
